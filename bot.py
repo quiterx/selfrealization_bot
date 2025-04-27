@@ -112,7 +112,7 @@ notes_menu = ReplyKeyboardMarkup(
 # Кнопки для раздела FAQ
 faq_menu = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="❓ Частые вопросы"), KeyboardButton(text="✍️ Задать свой вопрос")],
+        [KeyboardButton(text="❓ Частые вопросы")],
         [KeyboardButton(text="⬅️ В меню")],
     ],
     resize_keyboard=True
@@ -167,7 +167,7 @@ async def handle_menu(message: types.Message):
             await message.answer(f"Совет дня: {tip}")
         elif text == "❓ Вопрос тренеру":
             await message.answer(
-                "Ты можешь выбрать частый вопрос или задать свой!",
+                "Ты можешь выбрать частый вопрос!",
                 reply_markup=faq_menu
             )
         elif text == "📅 Планы и мысли":
@@ -181,7 +181,7 @@ async def handle_menu(message: types.Message):
                 f"🍽 Трекер калорий\n\nЛимит: {today['limit']} ккал\nОсталось: {today['left']} ккал\n\nЧто сделать?",
                 reply_markup=calories_menu
             )
-        elif text == "�� Вода":
+        elif text == "💧 Вода":
             today = await water.get_today(user_id)
             await message.answer(
                 f"💧 Трекер воды\n\nЛимит: {today['limit']} мл\nОсталось: {today['left']} мл\n\nЧто сделать?",
@@ -248,7 +248,7 @@ async def handle_menu(message: types.Message):
                 [InlineKeyboardButton(text="❌ Нет", callback_data="cancel_reset_activity")],
             ])
             await message.answer("Вы точно уверены, что хотите сбросить активность за сегодня?", reply_markup=kb)
-        elif text == "�� История активности":
+        elif text == "📊 История активности":
             hist = await activity.get_history(user_id, 7)
             msg = "История активности за 7 дней:\n"
             for d, steps, workout in reversed(hist):
@@ -306,9 +306,6 @@ async def handle_menu(message: types.Message):
                 [InlineKeyboardButton(text=q, callback_data=f"faq_{id}")] for id, q, _ in faq_list
             ])
             await message.answer("Выбери вопрос:", reply_markup=kb)
-        elif text == "✍️ Задать свой вопрос":
-            await message.answer("Напиши свой вопрос тренеру:", reply_markup=ReplyKeyboardRemove())
-            dp.fsm_state = "ask_question"
         elif text == "⬅️ В меню":
             await message.answer("Выбери раздел:", reply_markup=main_menu)
         elif dp.fsm_state == "subtract_calories":
@@ -392,14 +389,6 @@ async def handle_menu(message: types.Message):
             await message.answer(
                 "✅ Мысль сохранена",
                 reply_markup=notes_menu
-            )
-            dp.fsm_state = None
-        elif dp.fsm_state == "ask_question":
-            await add_user_question(user_id, text)
-            answer = await get_coach_answer(text)
-            await message.answer(
-                f"Спасибо за вопрос! Вот мой ответ:\n\n{answer}",
-                reply_markup=faq_menu
             )
             dp.fsm_state = None
     except Exception as e:
