@@ -1,0 +1,15 @@
+[Unit]
+Description=Self Realization Bot
+After=network.target
+
+[Service]
+Type=simple
+User=your_username
+WorkingDirectory=/path/to/your/bot/directory
+Environment=PYTHONPATH=/path/to/your/bot/directory
+ExecStart=/usr/bin/python3 bot.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target 
