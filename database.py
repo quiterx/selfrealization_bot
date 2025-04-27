@@ -116,4 +116,13 @@ async def init_db():
             )
         ''')
         
+        await db.execute('''
+            CREATE TABLE IF NOT EXISTS user_questions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER,
+                question TEXT,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        
         await db.commit() 
